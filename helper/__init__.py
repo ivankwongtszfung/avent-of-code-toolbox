@@ -1,3 +1,5 @@
+from typing import List
+
 import requests
 
 
@@ -9,7 +11,7 @@ class AventOfCode:
     def __init__(self, session_id):
         self.session_id = session_id
 
-    def get_question_input(self, question_no: int, year: int):
+    def get_question_input(self, question_no: int, year: int) -> List[str]:
         if int(question_no) != question_no:
             raise Exception("question_no has to be a number")
         r = requests.get(
@@ -19,4 +21,7 @@ class AventOfCode:
         )
         if not r.ok:
             raise BadRequest("we get a bad request, try renew your session")
-        return [line for line in r.iter_lines()]
+        return [
+            str(line, "utf-8") if isinstance(line, bytes) else line
+            for line in r.iter_lines()
+        ]
